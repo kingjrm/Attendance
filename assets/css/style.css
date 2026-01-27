@@ -49,6 +49,10 @@ h1 {
     background: #fafbfc;
     flex: 1;
     max-width: 300px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 #preview {
@@ -59,9 +63,23 @@ h1 {
     overflow: hidden;
 }
 
-#preview video {
+#preview .qr-scanner-container {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+#preview input[type="file"] {
+    font-size: 12px;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
     width: 100%;
-    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.qr-scanner button {
+    align-self: center;
+    margin-top: auto;
 }
 
 button {
@@ -119,6 +137,9 @@ input:focus {
     border-radius: 6px;
     display: none;
     font-weight: 500;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .feedback.success {
@@ -162,14 +183,18 @@ input:focus {
 .sidebar a {
     color: white;
     text-decoration: none;
-    display: block;
-    padding: 0.5rem;
-    border-radius: 5px;
-    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-weight: 500;
 }
 
 .sidebar a:hover, .sidebar a.active {
     background: #34495e;
+    transform: translateX(4px);
 }
 
 .main-content {
@@ -192,6 +217,11 @@ input:focus {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     text-align: center;
+    position: relative;
+}
+
+.stat-icon {
+    margin-bottom: 0.5rem;
 }
 
 .stat-card h3 {
@@ -269,6 +299,53 @@ th {
     background: #e74c3c;
 }
 
-.btn-danger:hover {
-    background: #c0392b;
+.registration-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.registration-form .form-group {
+    margin: 0;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.login-link a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.profile-info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+.qr-code-section {
+    text-align: center;
+}
+
+.qr-code-section img {
+    margin: 1rem 0;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+}
+
+.profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.profile-form .form-group {
+    margin: 0;
 }

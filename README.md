@@ -1,45 +1,42 @@
 # Student Attendance System
 
-A full-stack QR-Based Student Attendance System with time restrictions, manual ID entry, auto-absent logic, and class/section filtering.
+A full-stack QR-Based Student Attendance System with time restrictions, auto-absent logic, student registration, and admin approval.
 
 ## Features
 
-- QR code scanning using camera access
-- Manual student ID entry
-- Time-based attendance windows (Present, Late, Absent)
-- Automatic absent marking after cutoff time
-- Admin dashboard with statistics and management
-- Student, class, and section management
-- Attendance logs with filtering
-- Configurable time windows per class/section
-- Secure admin authentication
+- **Student Registration**: Students can register with email, password, and generate QR codes
+- **Admin Approval**: Admins approve/reject student registrations
+- **QR Code Scanning**: Camera-based QR scanning with manual ID entry fallback
+- **Student Portal**: Students can login to view their attendance history and profile
+- **Time Restrictions**: Configurable attendance windows per class/section (Present, Late, Absent)
+- **Auto-Absent Logic**: Automatic marking of absent students after cutoff time
+- **Admin Dashboard**: Professional dashboard with SVG icons, statistics, and filtering
+- **Class/Section Management**: Create and manage classes and sections
+- **Attendance Logs**: Detailed logs with date, time, status, method, and advanced filtering
+- **Time Window Configuration**: Set custom attendance times per class/section
+- **Secure Authentication**: Session-based authentication for both admin and students
 
-## Installation
+## Setup Instructions
 
-1. Set up XAMPP or similar PHP/MySQL environment.
-2. Place the project in `htdocs/Attendance/`.
-3. Update `.env` with your database credentials.
-4. Run the SQL schema in `database/schema.sql` to create the database.
-5. Access the attendance page at `http://localhost/Attendance/`.
-6. Admin login at `http://localhost/Attendance/admin/login.php` (admin/admin123).
+1. Import `database/schema.sql` into MySQL to create the database and tables
+2. Update `.env` with your database credentials if needed
+3. Access the attendance page at `http://localhost/Attendance/`
+4. Student registration at `http://localhost/Attendance/register.php`
+5. Student login at `http://localhost/Attendance/student_login.php`
+6. Admin login at `http://localhost/Attendance/admin/login.php` (admin/admin123)
+7. Run `includes/auto_absent.php` daily after 9:01 AM to mark absent students
 
-## Folder Structure
+## Database Updates
 
-- `assets/` - CSS, JS, images
-- `config/` - Configuration files
-- `includes/` - PHP includes
-- `database/` - SQL schema
-- `admin/` - Admin pages
-- `index.php` - Attendance page
-- `.env` - Environment variables
-
-## Auto-Absent Logic
-
-Run `includes/auto_absent.php` daily after the absent cutoff time to mark students as absent if no attendance record exists for the day.
+The students table has been updated with:
+- email (unique)
+- password (hashed)
+- status (pending/approved/rejected)
+- created_at timestamp
 
 ## Technologies
 
 - HTML, CSS (Poppins font), JavaScript
 - PHP with PDO
 - MySQL
-- Instascan for QR scanning
+- html5-qrcode for QR scanning

@@ -20,8 +20,8 @@
                 <input type="text" id="student-id" placeholder="e.g., 22-32139">
                 <button id="submit-manual">Submit</button>
             </div>
-            <div id="feedback" class="feedback"></div>
         </div>
+        <div id="feedback" class="feedback"></div>
     </div>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="assets/js/attendance.js"></script>

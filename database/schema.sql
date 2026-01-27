@@ -33,9 +33,13 @@ CREATE TABLE students (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id VARCHAR(20) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(255),
     class_id INT,
     section_id INT,
     qr_code TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE SET NULL,
     FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE SET NULL
 );
