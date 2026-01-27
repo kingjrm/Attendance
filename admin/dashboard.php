@@ -21,8 +21,8 @@ $absentToday = $pdo->query("SELECT COUNT(*) FROM attendance WHERE date = '$curre
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <div class="admin-container">
-        <div class="sidebar">
+    <div class="admin-container admin-layout">
+        <div class="sidebar admin-sidebar">
             <h2>Attendance Admin</h2>
             <ul>
                 <li><a href="dashboard.php" class="active">

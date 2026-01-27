@@ -42,7 +42,7 @@ $sections = $pdo->query("SELECT s.*, c.name as class_name FROM sections s JOIN c
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <div class="admin-container">
+    <div class="admin-container admin-layout">
         <div class="sidebar">
             <h2>Attendance Admin</h2>
             <ul>
