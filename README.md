@@ -22,7 +22,7 @@ A full-stack QR-Based Student Attendance System with time restrictions, auto-abs
 2. Update `.env` with your database credentials if needed
 3. Access the attendance page at `http://localhost/Attendance/`
 4. Student registration at `http://localhost/Attendance/register.php`
-5. Student login at `http://localhost/Attendance/student_login.php`
+5. Student login at `http://localhost/Attendance/student/login.php`
 6. Admin login at `http://localhost/Attendance/admin/login.php` (admin/admin123)
 7. Run `includes/auto_absent.php` daily after 9:01 AM to mark absent students
 

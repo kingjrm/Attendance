@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['student_logged_in']) || !$_SESSION['student_logged_in']) {
-    header('Location: student_login.php');
+    header('Location: ../login.php');
     exit;
 }
 
-require_once 'config/config.php';
+require_once '../config/config.php';
 
 $studentId = $_SESSION['student_id'];
 $stmt = $pdo->prepare("SELECT * FROM students WHERE id = ?");
@@ -30,27 +30,27 @@ $absentCount = array_filter($records, fn($r) => $r['status'] == 'Absent');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="admin-container">
         <div class="sidebar">
             <h2>Student Portal</h2>
             <ul>
-                <li><a href="student_dashboard.php" class="active">
+                <li><a href="dashboard.php" class="active">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     Dashboard
                 </a></li>
-                <li><a href="student_profile.php">
+                <li><a href="profile.php">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     Profile
                 </a></li>
-                <li><a href="student_logout.php">
+                <li><a href="logout.php">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>

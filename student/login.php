@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="auth-page">
     <div class="container">
         <h1>Student Login</h1>
-        <form action="student_login.php" method="post">
+        <form action="login.php" method="post">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
@@ -33,7 +33,7 @@
 </html>
 <?php
 session_start();
-require_once 'config/config.php';
+require_once '../config/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
@@ -46,10 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($student && password_verify($password, $student['password'])) {
         $_SESSION['student_logged_in'] = true;
         $_SESSION['student_id'] = $student['id'];
-        header('Location: student_dashboard.php');
+        header('Location: dashboard.php');
         exit;
     } else {
-        header('Location: student_login.php?error=1');
+        header('Location: login.php?error=1');
         exit;
     }
 }

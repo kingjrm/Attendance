@@ -55,7 +55,7 @@
             <button type="submit" class="btn">Register</button>
         </form>
         <div class="login-link">
-            <p>Already have an account? <a href="student_login.php">Login here</a></p>
+            <p>Already have an account? <a href="student/login.php">Login here</a></p>
             <p><a href="index.php">Back to Attendance</a></p>
         </div>
         <?php if (isset($_GET['message'])): ?>

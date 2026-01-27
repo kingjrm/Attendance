@@ -27,8 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare("UPDATE students SET status = 'rejected' WHERE id = ?");
         $stmt->execute([$id]);
         $message = 'Student rejected.';
+    } elseif (isset($_POST['delete_student'])) {
+        $id = $_POST['id'];
+        $stmt = $pdo->prepare("DELETE FROM students WHERE id = ?");
+        $stmt->execute([$id]);
+        $message = 'Student deleted successfully.';
     }
 }
+
+// Get students stats
+$totalStudents = $pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
+$approvedStudents = $pdo->query("SELECT COUNT(*) FROM students WHERE status = 'approved'")->fetchColumn();
+$pendingStudents = $pdo->query("SELECT COUNT(*) FROM students WHERE status = 'pending'")->fetchColumn();
 
 // Get students
 $students = $pdo->query("SELECT s.*, c.name as class_name, sec.name as section_name FROM students s LEFT JOIN classes c ON s.class_id = c.id LEFT JOIN sections sec ON s.section_id = sec.id ORDER BY s.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
@@ -48,7 +58,7 @@ $sections = $pdo->query("SELECT * FROM sections")->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="admin-container admin-layout">
-        <div class="sidebar">
+        <div class="sidebar admin-sidebar">
             <h2>Attendance Admin</h2>
             <ul>
                 <li><a href="dashboard.php">
@@ -92,93 +102,179 @@ $sections = $pdo->query("SELECT * FROM sections")->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </div>
         <div class="main-content">
-            <h1>Manage Students</h1>
+            <div class="students-header">
+                <h1>Manage Students</h1>
+                <button type="button" class="btn" onclick="openModal()">Add New Student</button>
+            </div>
+
             <?php if ($message): ?>
-                <div class="feedback success" style="display: block;"><?php echo $message; ?></div>
+                <div class="feedback success" style="display: block; margin-bottom: 2rem;"><?php echo $message; ?></div>
             <?php endif; ?>
-            <form method="post">
-                <div class="form-group">
-                    <label for="student_id">Student ID:</label>
-                    <input type="text" id="student_id" name="student_id" required>
+
+            <div class="students-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Total Students</h3>
+                    <div class="stat-number"><?php echo $totalStudents; ?></div>
                 </div>
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Approved</h3>
+                    <div class="stat-number"><?php echo $approvedStudents; ?></div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Pending</h3>
+                    <div class="stat-number"><?php echo $pendingStudents; ?></div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="class_id">Class:</label>
-                    <select id="class_id" name="class_id" required>
-                        <option value="">Select Class</option>
-                        <?php foreach ($classes as $class): ?>
-                            <option value="<?php echo $class['id']; ?>"><?php echo $class['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="section_id">Section:</label>
-                    <select id="section_id" name="section_id" required>
-                        <option value="">Select Section</option>
-                        <?php foreach ($sections as $section): ?>
-                            <option value="<?php echo $section['id']; ?>"><?php echo $section['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <button type="submit" name="add_student" class="btn">Add Student</button>
-            </form>
-            <h2>Students List</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Class</th>
-                        <th>Section</th>
-                        <th>Status</th>
-                        <th>QR Code</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($students as $student): ?>
+            </div>
+
+            <div class="students-table-container">
+                <table class="students-table">
+                    <thead>
                         <tr>
-                            <td><?php echo $student['student_id']; ?></td>
-                            <td><?php echo $student['name']; ?></td>
-                            <td><?php echo $student['email']; ?></td>
-                            <td><?php echo $student['class_name']; ?></td>
-                            <td><?php echo $student['section_name']; ?></td>
-                            <td><?php echo ucfirst($student['status']); ?></td>
-                            <td><img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=<?php echo urlencode($student['qr_code']); ?>" alt="QR Code"></td>
-                            <td>
-                                <?php if ($student['status'] == 'pending'): ?>
-                                    <form method="post" style="display: inline;">
-                                        <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
-                                        <button type="submit" name="approve_student" class="btn" style="background: #10b981;">Approve</button>
-                                    </form>
-                                    <form method="post" style="display: inline;">
-                                        <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
-                                        <button type="submit" name="reject_student" class="btn btn-danger">Reject</button>
-                                    </form>
-                                <?php else: ?>
-                                    <form method="post" style="display: inline;">
-                                        <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
-                                        <button type="submit" name="delete_student" class="btn btn-danger">Delete</button>
-                                    </form>
-                                <?php endif; ?>
-                            </td>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Class</th>
+                            <th>Section</th>
+                            <th>Status</th>
+                            <th>QR Code</th>
+                            <th>Actions</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($students as $student): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($student['student_id']); ?></td>
+                                <td><?php echo htmlspecialchars($student['name']); ?></td>
+                                <td><?php echo htmlspecialchars($student['email']); ?></td>
+                                <td><?php echo htmlspecialchars($student['class_name'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($student['section_name'] ?? 'N/A'); ?></td>
+                                <td>
+                                    <span class="status-badge status-<?php echo $student['status']; ?>">
+                                        <?php echo ucfirst($student['status']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=<?php echo urlencode($student['qr_code']); ?>" alt="QR Code" style="border-radius: 4px;">
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <?php if ($student['status'] == 'pending'): ?>
+                                            <form method="post" style="display: inline;">
+                                                <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
+                                                <button type="submit" name="approve_student" class="btn btn-sm" style="background: #10b981; color: white;">Approve</button>
+                                            </form>
+                                            <form method="post" style="display: inline;">
+                                                <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
+                                                <button type="submit" name="reject_student" class="btn btn-sm btn-danger">Reject</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <form method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this student?')">
+                                                <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
+                                                <button type="submit" name="delete_student" class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Student</h2>
+                <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="student_id">Student ID:</label>
+                        <input type="text" id="student_id" name="student_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Full Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="class_id">Class:</label>
+                        <select id="class_id" name="class_id" required>
+                            <option value="">Select Class</option>
+                            <?php foreach ($classes as $class): ?>
+                                <option value="<?php echo $class['id']; ?>"><?php echo htmlspecialchars($class['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="section_id">Section:</label>
+                        <select id="section_id" name="section_id" required>
+                            <option value="">Select Section</option>
+                            <?php foreach ($sections as $section): ?>
+                                <option value="<?php echo $section['id']; ?>"><?php echo htmlspecialchars($section['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" name="add_student" class="btn">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('addStudentModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('addStudentModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addStudentModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
