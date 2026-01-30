@@ -27,35 +27,24 @@
                 <div class="form-group lock">
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
+                    <button type="button" class="toggle-password" data-target="password">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#667eea"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="form-group lock">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                    <button type="button" class="toggle-password" data-target="confirm_password">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#667eea"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="form-group id">
                     <label for="student_id">Student ID:</label>
                     <input type="text" id="student_id" name="student_id" required>
-                </div>
-                <div class="form-group school">
-                    <label for="class_id">Class:</label>
-                    <select id="class_id" name="class_id" required>
-                        <option value="">Select Class</option>
-                        <?php
-                        require_once '../config/config.php';
-                        $classes = $pdo->query("SELECT * FROM classes")->fetchAll(PDO::FETCH_ASSOC);
-                        foreach ($classes as $class) {
-                            echo "<option value='{$class['id']}'>{$class['name']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group book">
-                    <label for="section_id">Section:</label>
-                    <select id="section_id" name="section_id" required>
-                        <option value="">Select Section</option>
-                        <?php
-                        $sections = $pdo->query("SELECT * FROM sections")->fetchAll(PDO::FETCH_ASSOC);
-                        foreach ($sections as $section) {
-                            echo "<option value='{$section['id']}'>{$section['name']}</option>";
-                        }
-                        ?>
-                    </select>
                 </div>
                 <div class="form-group checkbox">
                     <label class="checkbox-label">
@@ -154,12 +143,11 @@
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value.trim();
+                const confirmPassword = document.getElementById('confirm_password').value.trim();
                 const studentId = document.getElementById('student_id').value.trim();
-                const classId = document.getElementById('class_id').value;
-                const sectionId = document.getElementById('section_id').value;
                 const agreed = agreeCheckbox.checked;
 
-                signupBtn.disabled = !(name && email && password && studentId && classId && sectionId && agreed);
+                signupBtn.disabled = !(name && email && password && confirmPassword && studentId && agreed && password === confirmPassword);
             }
 
             form.addEventListener('input', checkFormValidity);
@@ -205,7 +193,30 @@
                 if (!agreeCheckbox.checked) {
                     e.preventDefault();
                     alert('Please agree to the Terms & Conditions and Privacy Policy.');
+                    return;
                 }
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match.');
+                    return;
+                }
+            });
+
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    const input = document.getElementById(target);
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.99902 3L20.999 21L19.999 22L15.999 18H4.99902C3.89402 18 2.99902 17.105 2.99902 16V6C2.99902 5.46957 3.21002 5.00097 3.58502 4.707L1.99902 3.171L2.99902 3ZM11.999 6C13.0609 6 14.0783 6.42143 14.8284 7.17157C15.5786 7.92172 15.999 8.93913 15.999 10C15.999 10.552 15.551 11 14.999 11C14.447 11 13.999 10.552 13.999 10C13.999 9.46957 13.789 9.00097 13.414 8.707L11.999 7.292C11.999 6.74 11.551 6.292 10.999 6.292L11.999 6ZM11.999 8C12.551 8 12.999 8.448 12.999 9C12.999 9.552 12.551 10 11.999 10C11.447 10 10.999 9.552 10.999 9C10.999 8.448 11.551 8.448 11.999 8.448L11.999 8ZM4.99902 6.414L6.99902 8.414V14H14.585L16.585 16H19.999V6H4.99902V6.414Z" fill="#667eea"/></svg>';
+                    } else {
+                        input.type = 'password';
+                        this.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#667eea"/></svg>';
+                    }
+                });
             });
         });
     </script>

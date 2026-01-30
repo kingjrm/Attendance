@@ -70,21 +70,48 @@
 require_once 'config/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $studentId = $_POST['student_id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $classId = $_POST['class_id'];
-    $sectionId = $_POST['section_id'];
-    $qrCode = $studentId; // Use student ID as QR code
+    $errors = [];
 
-    try {
-        $stmt = $pdo->prepare("INSERT INTO students (student_id, name, email, password, class_id, section_id, qr_code) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$studentId, $name, $email, $password, $classId, $sectionId, $qrCode]);
-        header('Location: student/register.php?message=Registration successful. Please wait for admin approval.');
-        exit;
-    } catch (PDOException $e) {
-        header('Location: student/register.php?message=Registration failed: ' . $e->getMessage());
+    $studentId = trim($_POST['student_id']);
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
+
+    // Validation
+    if (empty($studentId)) $errors[] = 'Student ID is required.';
+    if (empty($name)) $errors[] = 'Full name is required.';
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Valid email is required.';
+    if (empty($password)) $errors[] = 'Password is required.';
+    if (strlen($password) < 6) $errors[] = 'Password must be at least 6 characters.';
+    if ($password !== $confirmPassword) $errors[] = 'Passwords do not match.';
+
+    if (empty($errors)) {
+        // Check if student_id or email exists
+        $stmt = $pdo->prepare("SELECT id FROM students WHERE student_id = ? OR email = ?");
+        $stmt->execute([$studentId, $email]);
+        if ($stmt->fetch()) {
+            $errors[] = 'Student ID or Email already exists.';
+        }
+    }
+
+    if (empty($errors)) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $qrCode = $studentId; // Use student ID as QR code
+
+        try {
+            $stmt = $pdo->prepare("INSERT INTO students (student_id, name, email, password, qr_code) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$studentId, $name, $email, $hashedPassword, $qrCode]);
+            header('Location: student/register.php?message=Registration successful. Please wait for admin approval.');
+            exit;
+        } catch (PDOException $e) {
+            $errors[] = 'Registration failed: ' . $e->getMessage();
+        }
+    }
+
+    if (!empty($errors)) {
+        $message = implode(' ', $errors);
+        header('Location: student/register.php?message=' . urlencode($message));
         exit;
     }
 }

@@ -357,8 +357,8 @@ th {
     border: 2px solid #e5e7eb;
     border-radius: 6px;
     font-size: 0.9rem;
-    transition: all 0.2s;
-    background: #f9fafb;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    background-color: #f9fafb;
     background-repeat: no-repeat;
     background-position: left 1rem center;
     background-size: 1rem 1rem;
@@ -367,7 +367,7 @@ th {
 .form-group input:focus, .form-group select:focus {
     outline: none;
     border-color: #667eea;
-    background: white;
+    background-color: white;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -376,15 +376,35 @@ th {
 }
 
 .form-group.user input {
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OSA0IDQgNC40IDQgNCBjMC0yLjY3LTUuMzMtOC04LTh2MmgxNnYtMmMwLTIuNjYtNS4zMy00LTgtNHoiLz48L3N2Zz4=");
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PGNpcmNsZSBjeD0iMTIiIGN5PSI4IiByPSI0Ii8+PHBhdGggZD0iTTIwIDIwYzAtNC40LTMuNi04LTgtOHMtOCA3LjYtOCA4Ii8+PC9zdmc+");
 }
 
 .form-group.email input {
     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTIwIDRINGMtMS4xIDAtMS45OS45LTEuOTkgMkwyIDE4YzAgMS4xLjkgMiAyIDJoMTZjMS4xIDAgMi0uOSAyLTJWNmMwLTEuMS0uOS0yLTItMnptMCA0bC04IDUtOC01VjZsOCA1IDgtNXYyeiIvPjwvc3ZnPg==");
 }
 
+.form-group.lock {
+    position: relative;
+}
+
 .form-group.lock input {
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTE4IDhoLTFWNmMwLTItNzYtMi4yNC01LTVTNyAzLjI0IDcgNnYySDRjLTEuMSAwLTIgLjktMiAydjEwYzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJWMTBjMC0xLjEtLjktMi0yLTJ6TTkgNmMwLTEuNjYgMS4zNC0zIDMtM3MzIDEuMzQgMyAzdjJINlY2em0zIDljLTEuMSAwLTItLjktMi0ycy45LTIgMi0yIDIgLjkgMiAyLS45IDIgMi0yeiIvPjwvc3ZnPg==");
+    padding-right: 3.5rem;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .form-group.school select {
@@ -421,7 +441,7 @@ th {
     background-color: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 4px;
-    margin-right: 0.5rem;
+    margin-right: 1rem;
     margin-top: 0.1rem;
     flex-shrink: 0;
     position: relative;
