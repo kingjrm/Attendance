@@ -12,10 +12,17 @@ $stmt = $pdo->prepare("SELECT * FROM students WHERE id = ?");
 $stmt->execute([$studentId]);
 $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Get attendance history
-$attendance = $pdo->prepare("SELECT a.*, DATE_FORMAT(a.date, '%M %d, %Y') as formatted_date FROM attendance a WHERE student_id = ? ORDER BY date DESC");
+// Get attendance history with subjects
+$attendance = $pdo->prepare("SELECT a.*, s.name as subject_name, DATE_FORMAT(a.date, '%M %d, %Y') as formatted_date FROM attendance a LEFT JOIN subjects s ON a.subject_id = s.id WHERE student_id = ? ORDER BY s.name, date DESC");
 $attendance->execute([$studentId]);
 $records = $attendance->fetchAll(PDO::FETCH_ASSOC);
+
+// Group records by subject
+$groupedRecords = [];
+foreach ($records as $record) {
+    $subject = $record['subject_name'] ?: 'General';
+    $groupedRecords[$subject][] = $record;
+}
 
 // Calculate stats
 $totalDays = count($records);
@@ -60,6 +67,11 @@ $absentCount = array_filter($records, fn($r) => $r['status'] == 'Absent');
         </div>
         <div class="main-content">
             <h1>Welcome, <?php echo htmlspecialchars($student['name']); ?>!</h1>
+            <div class="qr-section" style="text-align: center; margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                <h2>Your QR Code</h2>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?php echo urlencode($student['qr_code']); ?>" alt="QR Code" style="border: 2px solid #ddd; padding: 10px; background: white;">
+                <p>Use this QR code to mark your attendance.</p>
+            </div>
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-icon">
@@ -99,26 +111,33 @@ $absentCount = array_filter($records, fn($r) => $r['status'] == 'Absent');
                 </div>
             </div>
             <h2>Your Attendance History</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time In</th>
-                        <th>Status</th>
-                        <th>Method</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($records as $record): ?>
-                        <tr>
-                            <td><?php echo $record['formatted_date']; ?></td>
-                            <td><?php echo $record['time_in'] ?: '-'; ?></td>
-                            <td><?php echo $record['status']; ?></td>
-                            <td><?php echo $record['method'] ?: '-'; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <?php if (empty($groupedRecords)): ?>
+                <p>No attendance records found.</p>
+            <?php else: ?>
+                <?php foreach ($groupedRecords as $subject => $recs): ?>
+                    <h3><?php echo htmlspecialchars($subject); ?></h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time In</th>
+                                <th>Status</th>
+                                <th>Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recs as $record): ?>
+                                <tr>
+                                    <td><?php echo $record['formatted_date']; ?></td>
+                                    <td><?php echo $record['time_in'] ?: '-'; ?></td>
+                                    <td><?php echo $record['status']; ?></td>
+                                    <td><?php echo $record['method'] ?: '-'; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </body>

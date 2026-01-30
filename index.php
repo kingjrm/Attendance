@@ -13,7 +13,6 @@
         <div class="attendance-form">
             <div class="qr-scanner">
                 <div id="preview"></div>
-                <button id="start-scan">Start QR Scan</button>
             </div>
             <div class="manual-entry">
                 <label for="student-id">Or Enter Student ID:</label>

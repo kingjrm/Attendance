@@ -6,11 +6,12 @@ $filterDate = $_GET['date'] ?? date('Y-m-d');
 $filterClass = $_GET['class'] ?? '';
 $filterSection = $_GET['section'] ?? '';
 
-$query = "SELECT a.*, s.student_id, s.name, c.name as class_name, sec.name as section_name 
+$query = "SELECT a.*, s.student_id, s.name, c.name as class_name, sec.name as section_name, sub.name as subject_name 
           FROM attendance a 
           JOIN students s ON a.student_id = s.id 
           LEFT JOIN classes c ON s.class_id = c.id 
           LEFT JOIN sections sec ON s.section_id = sec.id 
+          LEFT JOIN subjects sub ON a.subject_id = sub.id 
           WHERE a.date = ?";
 $params = [$filterDate];
 
@@ -126,6 +127,7 @@ $sections = $pdo->query("SELECT * FROM sections")->fetchAll(PDO::FETCH_ASSOC);
                         <th>Name</th>
                         <th>Class</th>
                         <th>Section</th>
+                        <th>Subject</th>
                         <th>Date</th>
                         <th>Time In</th>
                         <th>Status</th>
@@ -139,6 +141,7 @@ $sections = $pdo->query("SELECT * FROM sections")->fetchAll(PDO::FETCH_ASSOC);
                             <td><?php echo $record['name']; ?></td>
                             <td><?php echo $record['class_name']; ?></td>
                             <td><?php echo $record['section_name']; ?></td>
+                            <td><?php echo $record['subject_name'] ?: '-'; ?></td>
                             <td><?php echo $record['date']; ?></td>
                             <td><?php echo $record['time_in']; ?></td>
                             <td><?php echo $record['status']; ?></td>
