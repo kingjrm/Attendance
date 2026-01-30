@@ -353,7 +353,7 @@ th {
 
 .form-group input, .form-group select {
     width: 100%;
-    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    padding: 0.6rem 1rem 0.6rem 3rem;
     border: 2px solid #e5e7eb;
     border-radius: 6px;
     font-size: 0.9rem;
@@ -371,7 +371,7 @@ th {
 .form-group::before {
     content: "";
     position: absolute;
-    left: 0.75rem;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
     width: 1rem;
@@ -426,8 +426,8 @@ th {
 }
 
 .checkmark {
-    height: 18px;
-    width: 18px;
+    height: 20px;
+    width: 20px;
     background-color: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 4px;
@@ -447,10 +447,10 @@ th {
     content: "";
     position: absolute;
     display: none;
-    left: 5px;
+    left: 6px;
     top: 2px;
-    width: 4px;
-    height: 8px;
+    width: 5px;
+    height: 10px;
     border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
