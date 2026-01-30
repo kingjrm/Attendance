@@ -403,6 +403,8 @@ th {
 .form-group.book::before {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23667eea'%3e%3cpath d='M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z'/%3e%3c/svg%3e");
 }
+
+.form-group.checkbox {
     text-align: left;
     margin-top: 1rem;
 }
