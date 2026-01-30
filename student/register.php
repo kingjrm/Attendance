@@ -19,10 +19,12 @@
                 <div class="form-group user">
                     <label for="name">Full Name:</label>
                     <input type="text" id="name" name="name" required>
+                    <span class="error-message" id="name-error"></span>
                 </div>
                 <div class="form-group email">
                     <label for="email">Email Address:</label>
                     <input type="email" id="email" name="email" required>
+                    <span class="error-message" id="email-error"></span>
                 </div>
                 <div class="form-group lock">
                     <label for="password">Password:</label>
@@ -32,6 +34,7 @@
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#667eea"/>
                         </svg>
                     </button>
+                    <span class="error-message" id="password-error"></span>
                 </div>
                 <div class="form-group lock">
                     <label for="confirm_password">Confirm Password:</label>
@@ -41,10 +44,12 @@
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#667eea"/>
                         </svg>
                     </button>
+                    <span class="error-message" id="confirm-password-error"></span>
                 </div>
                 <div class="form-group id">
                     <label for="student_id">Student ID:</label>
                     <input type="text" id="student_id" name="student_id" required>
+                    <span class="error-message" id="student-id-error"></span>
                 </div>
                 <div class="form-group checkbox">
                     <label class="checkbox-label">
@@ -140,6 +145,8 @@
             const acceptPrivacy = document.getElementById('acceptPrivacy');
 
             function checkFormValidity() {
+                let isValid = true;
+
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value.trim();
@@ -147,7 +154,56 @@
                 const studentId = document.getElementById('student_id').value.trim();
                 const agreed = agreeCheckbox.checked;
 
-                signupBtn.disabled = !(name && email && password && confirmPassword && studentId && agreed && password === confirmPassword);
+                // Name validation
+                if (!name) {
+                    document.getElementById('name-error').textContent = 'Full name is required.';
+                    isValid = false;
+                } else {
+                    document.getElementById('name-error').textContent = '';
+                }
+
+                // Email validation
+                if (!email) {
+                    document.getElementById('email-error').textContent = 'Email is required.';
+                    isValid = false;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    document.getElementById('email-error').textContent = 'Please enter a valid email.';
+                    isValid = false;
+                } else {
+                    document.getElementById('email-error').textContent = '';
+                }
+
+                // Password validation
+                if (!password) {
+                    document.getElementById('password-error').textContent = 'Password is required.';
+                    isValid = false;
+                } else if (password.length < 6) {
+                    document.getElementById('password-error').textContent = 'Password must be at least 6 characters.';
+                    isValid = false;
+                } else {
+                    document.getElementById('password-error').textContent = '';
+                }
+
+                // Confirm password validation
+                if (!confirmPassword) {
+                    document.getElementById('confirm-password-error').textContent = 'Please confirm your password.';
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    document.getElementById('confirm-password-error').textContent = 'Passwords do not match.';
+                    isValid = false;
+                } else {
+                    document.getElementById('confirm-password-error').textContent = '';
+                }
+
+                // Student ID validation
+                if (!studentId) {
+                    document.getElementById('student-id-error').textContent = 'Student ID is required.';
+                    isValid = false;
+                } else {
+                    document.getElementById('student-id-error').textContent = '';
+                }
+
+                signupBtn.disabled = !(isValid && agreed);
             }
 
             form.addEventListener('input', checkFormValidity);
@@ -190,16 +246,14 @@
             });
 
             form.addEventListener('submit', function(e) {
+                checkFormValidity(); // Ensure errors are shown
+                if (signupBtn.disabled) {
+                    e.preventDefault();
+                    return;
+                }
                 if (!agreeCheckbox.checked) {
                     e.preventDefault();
                     alert('Please agree to the Terms & Conditions and Privacy Policy.');
-                    return;
-                }
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirm_password').value;
-                if (password !== confirmPassword) {
-                    e.preventDefault();
-                    alert('Passwords do not match.');
                     return;
                 }
             });

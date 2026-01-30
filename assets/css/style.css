@@ -351,6 +351,13 @@ th {
     font-size: 0.8rem;
 }
 
+.error-message {
+    color: #e74c3c;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
 .form-group input, .form-group select {
     width: 100%;
     padding: 0.6rem 1rem 0.6rem 3rem;
