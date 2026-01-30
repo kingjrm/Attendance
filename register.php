@@ -81,10 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         $stmt = $pdo->prepare("INSERT INTO students (student_id, name, email, password, class_id, section_id, qr_code) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$studentId, $name, $email, $password, $classId, $sectionId, $qrCode]);
-        header('Location: register.php?message=Registration successful. Please wait for admin approval.');
+        header('Location: student/register.php?message=Registration successful. Please wait for admin approval.');
         exit;
     } catch (PDOException $e) {
-        header('Location: register.php?message=Registration failed: ' . $e->getMessage());
+        header('Location: student/register.php?message=Registration failed: ' . $e->getMessage());
         exit;
     }
 }
